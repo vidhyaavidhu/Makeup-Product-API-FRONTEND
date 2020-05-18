@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Makeup Info</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+</head>
+<body>  
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8" id="content">
+            <div class="container-fluid p0">
+                <h2 class="title">Makeup Info API</h2>
+            </div>
+            <hr style="margin: 5px 0;"/>
+            <div class="container-fluid p0">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Brands</label>
+                            <select class="form-control" id="brand">          
+                                <option value=''>Select Brand</option>                      
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            <select class="form-control" id="product_type">
+                                <option value=''>Select Product Type</option> 
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 5px 0;"/>
+            <div id="results"></div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/brands.js"></script>
+<script src="js/product_type.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    const API_URL = 'http://makeup-api.herokuapp.com/api/v1/products.json?';
+
+    const BRAND = $("#brand");
+    const PRODUCT_TYPE = $("#product_type");
+
+    brands.forEach(function(item){
+        BRAND.append("<option value='"+item+"'>"+item.charAt(0).toUpperCase() + item.slice(1)+"</option>");        
+    });
+
+    pdt_types.forEach(function(item){
+        PRODUCT_TYPE.append("<option value='"+item+"'>"+item.charAt(0).toUpperCase() + item.slice(1)+"</option>");        
+    });
+
+    $("#brand, #product_type").on("change", InitSearch);
+
+    function InitSearch(){
+        let brand = BRAND.val();
+        let product_type = PRODUCT_TYPE.val();
+        let params = '';
+        if(brand !== '' && product_type !== ''){
+            params = 'brand='+brand+'&product_type='+product_type;
+        }else if(brand !== '' && product_type === ''){
+            params = 'brand='+brand;
+        }else if(brand === '' && product_type !== ''){
+            params = 'product_type='+product_type;
+        }
+        if(params !== ''){
+            $.get(API_URL + params, function(res){
+                $("#results").html('');
+                if(res.length > 0){
+                    $.each(res, function(i, item){
+                        $("#results").append(ResultData(item))
+                    });
+                }else{
+                    $("#results").html("<p>No records found</p>");
+                }
+            });
+        }
+    }
+
+    function ResultData(data){
+        let html = "<br/>";
+        html += "<div class='conatainer-fluid'>";
+        html += "<div class='row'>";
+        html += "<div class='col-md-2'>";
+        html += "<img src='"+data.image_link+"' style='width:100%;border-radius: 5px;'>"
+        html += "</div>";            
+        html += "<div class='col-md-10'>";
+        html += "<p style='font-size:17px;margin:0;'><b>Name:</b> "+data.name+"</p>";
+        html += "<p style='font-size:15px;margin:0;'><b>Brand:</b> "+data.brand+"</p>";
+        html += "<p style='font-size:15px;margin:0;'><b>Type:</b> "+data.product_type+"</p>";
+        html += "<p style='font-size:14px;margin:0;'><b>Description:</b> "+data.description+"</p>";
+        html += "<p style='font-size:14px;margin:0;'><b>Price:</b> "+data.price+" $</b></p>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += '<hr style="margin: 5px 0;border-color:red;"/>';
+        return html;
+    }
+
+})
+</script>
+</body>
+</html>

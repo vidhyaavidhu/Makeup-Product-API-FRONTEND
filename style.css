@@ -1,0 +1,26 @@
+/* CSS Document */
+html,
+body{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-image: url('../images//bg.jpeg');
+    background-repeat: repeat;
+}
+
+#content{
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.title{
+    margin: 10px 0px;
+    color: #88dd00;
+}
+
+.p0{
+    padding: 0;
+}
