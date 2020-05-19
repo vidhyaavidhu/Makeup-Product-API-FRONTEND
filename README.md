@@ -1,1 +1,1 @@
-# Makeup-Product-API-FRONTEND
+# COSMETICS-FRONTEND
